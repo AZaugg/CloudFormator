@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/static/img/glyphicons_195_circle_info.png">
+
+    <title>Narrow Jumbotron Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="jumbotron-narrow.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="container">
+      <div class="header">
+        <ul class="nav nav-pills pull-right">
+          <li class="active"><a href="/">Home</a></li>
+          <li><a href="#">Refresh</a></li>
+        </ul>
+        <h3 class="text-muted">Cloud Formations</h3>
+      </div>
+
+      <div class="jumbotron">
+        <h1>CF Generator - Node configuration</h1>
+        <p class="lead">Configure our envinroment node buyt node</p>
+      </div>
+
+     <form method="get" name="env" action="/display">
+	<input type="hidden" name="selectedEc2Count" value={{rawEc2Count}}>
+	<input type="hidden" name="selectedRdsCount" value={{rawRdsCount}}>
+     <div class="well">
+         <h4>Generic config for all nodes</h4>
+      <p>
+        SSH Keys:
+        <select name="Key">
+        {% for sshKey in sshKeys %}
+          <option value={{sshKey}}>{{sshKey}}</option> 
+        {% endfor%}
+        </select>
+        <span class="glyphicon glyphicon-info-sign" class="toolTips" title="Enter the ssh keys you want to use on all instances created"> </span>
+      </p> 
+      <p>
+        Regions
+        <select name="Region"> 
+        {% for region in regions %}
+          <option value={{region}}>{{region}}</option> 
+        {% endfor%}
+        </select>
+	<span class="glyphicon glyphicon-info-sign" class="toolTips" title="Enter the regions where you want to deploy this envinorment"></span>
+      </p>  
+      <p>
+        Subnets
+        <select name="Subnets"> 
+        {% for subnet in subnets %}
+          <option value={{subnet}}>{{subnet}}</option> 
+        {% endfor%}
+        </select>
+	<span class="glyphicon glyphicon-info-sign" class="toolTips" title="Which Subnet would you like to provisiong your machines to"></span>
+      </p>  
+
+     </div>
+	{% for node in Ec2Count %}
+     <div class="well">
+	 <h4>Generic compute node: {{node}}</h4>
+	<p>
+	 Name:
+	 <input type="text" name="name-{{node}}">
+	<span class="glyphicon glyphicon-info-sign" class="toolTips" title="What is this node going to be called?"> </span>
+	</p>
+	<p>
+	 AMI - only supports single regions atm:
+	 <select name="ami-{{node}}">
+            {% for ami in amiList %}
+	       <option value={{ami}}>{{ami}}</option>
+	    {% endfor %}
+	 </select>
+	<span class="glyphicon glyphicon-info-sign" class="toolTips" title="What amazon image do you want to use"></span>
+	</p>
+	<p>
+	 Size(not yet supportead, hard coded values)
+	 <select name="size-{{node}}">
+            <option value="t1.micro">t1.micro</option>
+            <option value="t1.micro">m1.small</option>
+            <option value="t1.micro">m1.medium</option>
+            <option value="t1.micro">m1.large</option>
+            <option value="t1.micro">m2.xlarge</option>
+	</select><!-- Needs to be dynamic libcloud list_sizes()-->
+	<span class="glyphicon glyphicon-info-sign" class="toolTips" title="What size do you want your instance to be:
+id=t1.micro,  ram=613 disk=15 price=0.025 
+id=m1.small,  ram=1740 disk=160 price=0.095 
+id=m1.medium, ram=3700 disk=410 price=0.18 
+id=m1.large,  ram=7680 disk=850 price=0.38
+id=m1.xlarge, ram=15360 disk=1690 price=0.76
+id=m2.xlarge, ram=17510 disk=420 price=0.57 
+id=m2.2xlarge ram=35021 disk=850 price=1.14 
+id=m2.4xlarge ram=70042 disk=1690 price=2.28
+id=m3.medium, ram=3840 disk=4000 price=0.124
+id=m3.large,  ram=7168 disk=32000 price=0.248
+id=m3.xlarge, ram=15360 disk=80000 price=0.495
+id=m3.2xlarge ram=30720 disk=160000 price=0.99 
+id=c1.medium, ram=1740 disk=350 price=0.19 
+id=c1.xlarge, ram=7680 disk=1690 price=0.76
+id=c3.large,  ram=3750 disk=16 price=0.171
+id=c3.xlarge, ram=7000 disk=40 price=0.342 
+id=c3.2xlarge ram=15000 disk=80 price=0.633 
+id=c3.4xlarge ram=30000 disk=160 price=1.366 
+id=c3.8xlarge ram=60000 disk=320 price=2.732 
+id=i2.xlarge, ram=31232 disk=800 price=0.85 
+id=i2.2xlarge, ram=62464 disk=1600 price=1.71 
+id=i2.4xlarge, ram=124928 disk=3200 price=3.41 
+id=i2.8xlarge, ram=249856 disk=6400 price=6.82 
+"></span>
+	</p>
+      <p id="elb-{{node}}">
+        Place node behind the ELB
+        <input type="radio" name="elb-{{node}}" value="yes"> Yes
+        <input type="radio" name="elb-{{node}}" value="no" checked   >  No
+	<span class="glyphicon glyphicon-info-sign" class="toolTips" title="Is this node going to sit behind th eELB"></span>
+      </p>
+     </div>
+	{% endfor %}
+
+	{% for node in RdsCount %}
+     <div class="well" name="test">
+	 <h4>RDS node: {{node}}: - not supported yet</h4>
+      <p>
+        Choost database engine:
+        <select name="rdsEngine-{{node}}">
+		{% for engine in DBEngines %}
+		<option value={{engine}}>{{engine}}</option>
+		{% endfor %}
+	   </select>
+	   <span class="glyphicon glyphicon-info-sign" class="toolTips" title="Choose a Database Engine you want to work with"></span>
+      </p>
+	 <p>
+	   Choose a database name:
+        <input type="text" name="dbname-{{node}}">
+	<span class="glyphicon glyphicon-info-sign" class="toolTips" title="What is the name of the database you want to create"></span>
+      </p>
+	 <p>
+	   Choose a database username
+        <input type="text" name="dbusername-{{node}}">
+	<span class="glyphicon glyphicon-info-sign" class="toolTips" title="What is the username you want to use to connect to this database instance"></span>
+      </p>
+	 <p>
+	   Choose a database password
+        <input type="password" name="dbpassword-{{node}}">
+	<span class="glyphicon glyphicon-info-sign" class="toolTips" title="What is teh password for the database that you are going to connect to"></span>
+      </p>
+	 <p>
+	   Choose database size in GBs
+        <input type="number" name="dbgbs-{{node}}">
+	<span class="glyphicon glyphicon-info-sign" class="toolTips" title="What is the database size."></span>
+      </p>
+	<p>
+	 Choose database node size in GBs
+	 <select name="dbsize-{{node}}">
+            <option value="db.m1.small">t1.micro</option>
+            <option value="db.m1.small">m1.small</option>
+            <option value="db.m1.small">m1.medium</option>
+            <option value="db.m1.small">m1.large</option>
+            <option value="db.m1.small">m2.xlarge</option>
+	</select><!-- Needs to be dynamic libcloud list_sizes()-->
+	<span class="glyphicon glyphicon-info-sign" class="toolTips" title="How much grunt do you want teh database to have"></span>
+	</p>
+     </div>
+	{% endfor %}
+	<p>
+	 <button type="submit" class="btn btn-lg btn-primary">Create &raquo;</button>
+	</p>
+     </form>
+
+
+      <div class="footer">
+        <p>&copy; An Andy Zaugg production 2014</p>
+      </div>
+
+    </div> <!-- /container -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script> $('.toolTips').tooltip()</script>
+
+    <script type="text/javascript">
+
+    var urlParams;
+    (window.onpopstate = function () {
+        var match,
+            pl     = /\+/g,  // Regex for replacing addition symbol with a space
+            search = /([^&=]+)=?([^&]*)/g,
+            decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+            query  = window.location.search.substring(1);
+        urlParams = {};
+        while (match = search.exec(query))
+           urlParams[decode(match[1])] = decode(match[2]);
+    })();
+
+        if (urlParams["elb"] == "no") {
+           {% for node in Ec2Count %}
+	      $("#elb-{{node}}").hide();        
+	   {% endfor %}
+	}
+    </script>
+  </body>
+</html>
+
