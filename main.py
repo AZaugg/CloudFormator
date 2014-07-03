@@ -150,8 +150,8 @@ def config():
 			amiList = open("aws_cache/ami.list", "r").readlines()
 			sshKeys = open("aws_cache/ssh-keys.list", "r").readlines()
 			regions = open("aws_cache/aws-regions.list", "r").readlines()
-			# Need to pull from AWS
-			DBEngines = ['Mysql']
+			DBEngines = open("aws_cache/aws-DBEngines.list", "r").readlines()
+			#DBEngines = ['Mysql']
 			subnets = ['SUBNET-ID']
 		except IOError:
 			getAWS.getAWS.main()
