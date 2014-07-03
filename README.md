@@ -28,6 +28,9 @@ to install the above requirements
  Installation of troposphere
    git clone https://github.com/cloudtools/troposphere.git
    python setup.py install
+
+ configure aws cli
+   aws configure
   
   
 Run
