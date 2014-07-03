@@ -5,11 +5,9 @@ Create cloud formation templates via GUI
 
 Introduction/ Motivation
 =============
-For everyday users who want a very generic envinroment, some compute nodes and a database instance, want it fast, dont want to laern CF and may not have access to
-your AWS console. This tool does not utilize the full potential of cloud formations but will generate teh bare bones of EC2, ELB, RDS instances.
+For everyday users who want a very generic envinroment, some compute nodes and a database instance, want it fast, dont want to laern CF and may not have access to your AWS console. This tool does not utilize the full potential of cloud formations but will generate teh bare bones of EC2, ELB, RDS instances.
 
-My case users can define there temporary envinorment through this tool. Pass the generated config file to teh AWS admin who can then pop it, into
-Cloud formations.
+Wanted a repetable way to create crash and burn envinroemnts where users can define the basic  envinorment through this tool. Pass the generated config file to teh AWS admin who can then pop it, into Cloud formations.
 
 
 
@@ -36,6 +34,7 @@ Run
 ============= 
 
 python main.py
+
 Access teh site at localhost:5000
    
    
