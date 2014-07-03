@@ -59,19 +59,21 @@ def getRegions():
 def getDBEngines():
 	'''Retrieve a list of available DB engines
 	'''
-	aws_query = ["aws", "rds", "describe-db-engine-versions", "--output", "text", "--query", "DBEngineVersions[].DBEngineVersionDescription"]
+	aws_query = ["aws", "rds", "describe-db-engine-versions", "--output", "text", "--query", " DBEngineVersions[].Engine"]
 	DBEngines = subprocess.check_output(aws_query)
-	DBEngines = regions.split()
+	# Grab a list of all DB engine and remove duplicates
+	DBEngines = set(DBEngines.split())
+
 	f = open("aws_cache/aws-DBEngines.list", "w")
 	for engine in DBEngines:
-		f.write(Engine + "\n")	
+		f.write(engine + "\n")	
 	f.close()
 
 #----------------------------------------------------------------------
 def main():
-	getAMIs()
-	getSSHKeys()
-	getRegions()
+	#getAMIs()
+	#getSSHKeys()
+	#getRegions()
 	getDBEngines()
 #----------------------------------------------------------------------
 if __name__ == "__main__":
