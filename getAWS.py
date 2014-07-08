@@ -70,11 +70,25 @@ def getDBEngines():
 	f.close()
 
 #----------------------------------------------------------------------
+def getSubnets():
+	'''Retreive a list of subnets
+	'''
+	aws_query = ["aws", "ec2", "describe-subnets", "--output", "text", "--query", "Subnets[].SubnetId"]
+	Subnets = subprocess.check_output(aws_query)
+	# Grab a list of all DB engine and remove duplicates
+	Subnets = set(Subnets.split())
+
+	f = open("aws_cache/aws-Subnets.list", "w")
+	for subnet in Subnets:
+		f.write(subnet + "\n")	
+	f.close()
+#----------------------------------------------------------------------
 def main():
-	#getAMIs()
-	#getSSHKeys()
-	#getRegions()
+	getAMIs()
+	getSSHKeys()
+	getRegions()
 	getDBEngines()
+	getSubnets()
 #----------------------------------------------------------------------
 if __name__ == "__main__":
 	main()
