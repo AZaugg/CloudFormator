@@ -17,7 +17,7 @@
 # TODO: Add all provision steps
 
 
-import flask
+import flask, subprocess
 import getAWS
 from flask import request,redirect,url_for
 from troposphere import Base64, FindInMap, GetAtt, GetAZs, Join, Output
@@ -27,10 +27,14 @@ import troposphere.rds as rds
 
 app = flask.Flask(__name__)
 #------------------------------------------------------
-@app.route("/runit", methods=["POST"])
+@app.route("/runit", methods=["GET"])
 def runit():
-	pass
-	query = ["aws", "cloudformation", "create-stack", "--stack-name"]
+	query = ["aws", "cloudformation", "create-stack", "--stack-name", "hardcoded", "--template-body", "file:////home//andreasz//CloudFormator//stacks//CF.json" ]
+	o = subprocess.check_output(query)
+	return redirect("/")
+
+	
+
 #------------------------------------------------------
 @app.route("/display", methods=["GET"])
 def display():
@@ -73,6 +77,7 @@ def display():
 			instance.ImageId = ami
 			instance.InstanceType = size
 			instance.KeyName = selectedKey
+			#instance.Tags = ["test instance"]
 			#instance.SecurityGroups = ["default"] # Moved to Subnets 
 			instance.SubnetId = subnets
 			t.add_resource(instance)
@@ -100,6 +105,7 @@ def display():
 			RDSinstance.DBName = DBName
 			RDSinstance.MasterUsername = DBUsername
 			RDSinstance.MasterUserPassword = DBPassword
+			print DBPassword
 			RDSinstance.AllocatedStorage = "5"
 			RDSinstance.DBInstanceClass = DBSize
 			RDSinstance.DBSubnetGroupName = "rds-test" # HAard coded
@@ -116,6 +122,9 @@ def display():
 
 	output = t.to_json()
 	print output
+	f = open("stacks/CF.json", "w")
+	f.writelines(output)
+	f.close()
 
 	return flask.render_template("display.html", output=output)
 #------------------------------------------------------
@@ -125,7 +134,7 @@ def refreshdata():
 	getAWS.getAMIs()
 	getAWS.getSSHKeys()
 	getAWS.getRegions()
-	#getDBEngines()
+	getAWS.getDBEngines()
 	return redirect("/")
 	
 #------------------------------------------------------
@@ -152,9 +161,11 @@ def config():
 			regions = open("aws_cache/aws-regions.list", "r").readlines()
 			DBEngines = open("aws_cache/aws-DBEngines.list", "r").readlines()
 			#DBEngines = ['Mysql']
-			subnets = ['SUBNET-ID']
+			#subnets = ['SUBNET-ID']
+			subnets = open("aws_cache/aws-Subnets.list", "r").readlines()
 		except IOError:
-			getAWS.getAWS.main()
+			refreshdata()
+			
 
 	return flask.render_template("config.html", sshKeys=sshKeys, regions=regions, Ec2Count=Ec2Count, RdsCount=RdsCount, amiList=amiList, rawEc2Count=selectedEc2Count, rawRdsCount=selectedRdsCount, DBEngines=DBEngines, subnets=subnets)
 #------------------------------------------------------
